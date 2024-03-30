@@ -10,6 +10,7 @@ from tqdm import tqdm
 
 load_dotenv(find_dotenv())
 
+
 def ingest_docs():
     """
     Ingests langchain documents to pinecone.
@@ -29,19 +30,19 @@ def ingest_docs():
         full_path = f"./{file_path}"
 
         # Read the HTML content from the file
-        with open(full_path, 'r', encoding='utf-8') as file:
+        with open(full_path, "r", encoding="utf-8") as file:
             html_content = file.read()
 
         # Parse the HTML to find the canonical link
-        soup = BeautifulSoup(html_content, 'html.parser')
-        canonical_link_tag = soup.find('link', {'rel': 'canonical'})
+        soup = BeautifulSoup(html_content, "html.parser")
+        canonical_link_tag = soup.find("link", {"rel": "canonical"})
 
-        if canonical_link_tag and canonical_link_tag.has_attr('href'):
+        if canonical_link_tag and canonical_link_tag.has_attr("href"):
             # Update the document metadata with the canonical link
-            doc.metadata["source"] = canonical_link_tag['href']
+            doc.metadata["source"] = canonical_link_tag["href"]
 
         # print(doc.metadata["source"])
-            
+
     # Insert into pinecone
     print("Inserting documents into Pinecone...")
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
@@ -53,6 +54,7 @@ def ingest_docs():
     docsearch = PineconeVectorStore.from_documents(
         documents, embeddings, index_name=index_name
     )
+
 
 if __name__ == "__main__":
     ingest_docs()
